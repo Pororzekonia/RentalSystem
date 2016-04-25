@@ -1,20 +1,23 @@
-
 package userInterface;
 
 import staff.*;
 import users.*;
 import database.*;
+import inventory.Item;
 
 public class Helper {
-    private static Helper help = new Helper();
+    private static final Helper help = new Helper();
     private DatabaseInterface dbConn;
     private Customer cust = null;
     private StaffMember staff = null;
     private Manager manager = null;
     
-    private Helper(){
+  
+   private Helper()
+   {
         
-    }
+   }
+   
    public static Helper getInstance(){
       return help;
    }
@@ -60,10 +63,7 @@ public class Helper {
        manager = new Manager(user);
    }
    
-   public double getCustomerBalance(){
-       return cust.getBalance();
-   }
- 
+   
    public void setBalance(double bal){
         cust.setBalance(bal);
     }
@@ -71,4 +71,76 @@ public class Helper {
    public boolean topUp(double amount){
        return cust.topUp(amount);
    }
+   
+   public String getCustName(){
+       return cust.getUsername();
+   }
+   
+   public String getStaffName(){
+       return staff.getUsername();
+   }
+   
+   public double getBalance(){
+       return cust.getBalance();
+   }
+
+   public String header()
+   {
+       return cust.header();
+   }
+   
+    public void emptyBasket()
+    {
+      cust.emptyBasket();    
+    }
+
+    public Item getItemByTitle(String title, String type)
+    {
+        return dbConn.getItemByTitle(title, type);
+     }
+    
+    public Item getItemByID(String id)
+    {
+        return dbConn.getItemByID(id);
+     }
+    
+    public int getTotalFrequentRenterPoints()
+    {
+        return cust.getTotalFrequentRenterPoints();
+    }
+    
+    public String getAccountType()
+    {
+        return cust.getAccountType();
+    }
+    
+    public void askForRental(Item p)
+    {
+      cust.askForRental(p);
+    }
+    
+    public void rent()
+    {
+        cust.rent();
+    }
+
+    public String displayBasket()
+    {
+        return cust.displayBasket();
+    }
+    
+    public void getProductByID(String id)
+    {
+        cust.getProductByID(id);
+    }
+    
+    public void getProductByTitle(String title, String type, String c)
+    {
+        cust.getProductByTitle(title, type, c);
+    }
+    
+    public Item getItemByTitleAndPlatform(String title, String c)
+    {
+       return dbConn.getItemByTitleAndPlatform(title,c); 
+    }
 }
