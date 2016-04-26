@@ -8,7 +8,7 @@ import inventory.*;
 
 public class Helper {
     private static Helper help = new Helper();
-    private DatabaseInterface dbConn;
+    private DatabaseAccess dba;
     private Customer cust = null;
     private StaffMember staff = null;
     private Manager manager = null;
@@ -20,17 +20,45 @@ public class Helper {
       return help;
    }
    
-   public void setDbConn(DatabaseInterface dbConn)
+   public void deleteUser(String user){
+       staff.deleteUser(user);
+   }
+   
+   public void removeItem(String itemId){
+       dba.removeItem(itemId);
+   }
+   
+   public void deleteStaff(String user){
+       manager.deleteStaff(user);
+   }
+   
+   public void addMovie(String id, String name, boolean adult){
+       manager.addMovie(id, name, adult);
+   }
+ 
+   public void addGame(String id, String name, boolean adult){
+       manager.addGame(id, name, adult);
+   }
+   
+   public void setDbAccess(DatabaseAccess dba)
    {
-	this.dbConn = dbConn;
+	this.dba = dba;
     }
    
    public boolean addToBasket(Item i, int days){
        return cust.addToBasket(i, days);
    }
    
+   public String displayRentals(){
+       return cust.displayRentals();
+   }
+   
+   public double calcBasket(){
+       return cust.calcBasket();
+   }
+   
    public Item getItemByID(String id){
-       return dbConn.getItemByID(id);
+       return dba.getItemByID(id);
    }
    
    public String displayBasket(){
@@ -42,11 +70,17 @@ public class Helper {
    }
    
    public boolean rentItems(){
-       return true; //cust.rentItems();
+       if(cust.getBalance() <= calcBasket()){
+           return false;
+       }
+       if(cust.rentItems()){
+            return true;
+       }
+       return false;
    }
    
    public boolean canCustomerLogin(String user, String pass){
-       if(dbConn.canCustomerLogin(user, pass)){
+       if(dba.canCustomerLogin(user, pass)){
            getCustomerDetails(user);
            return true;
        }
@@ -54,7 +88,7 @@ public class Helper {
    }
    
    public boolean canStaffLogin(String user, String pass){
-       if(dbConn.canStaffLogin(user, pass)){
+       if(dba.canStaffLogin(user, pass)){
            getStaffDetails(user);
            return true;
        }
@@ -63,7 +97,7 @@ public class Helper {
 
    public boolean canManagerLogin(String user, String pass){
        
-        if(dbConn.canManagerLogin(user, pass)){
+        if(dba.canManagerLogin(user, pass)){
            getManagerDetails(user);
            return true;
        }
@@ -104,6 +138,14 @@ public class Helper {
    
    public double getBalance(){
        return cust.getBalance();
+   }
+   
+   public boolean isCustomerAdult(){
+       return cust.getAdultStatus();
+   }
+   
+   public void grantAdultAccess(String user){
+       staff.grantAdultAccess(user);
    }
 }
   

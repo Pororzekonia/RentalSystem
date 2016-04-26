@@ -13,5 +13,12 @@ public interface DatabaseInterface {
     public boolean canManagerLogin(String user, String pass);
     public ArrayList<Rental> getRentalDetails(String user);
     public Item getItemByID(String id);
+    public void deleteUser(String user);
+    public boolean isCustomerAdult(String user);
+    public void grantAdultAccess(String user);
+    public void removeItem(String itemId);
+    public void addMovie(String id, String name, boolean adult);
+    public void addGame(String id, String name, boolean adult);
+    public void deleteStaff(String user);
     
 }

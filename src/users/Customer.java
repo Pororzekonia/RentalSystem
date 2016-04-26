@@ -1,6 +1,6 @@
 package users;
 
-import database.Database;
+import database.DatabaseAccess;
 import paymentAPI.Payment;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +9,8 @@ import inventory.Item;
 import rental.Rental;
 
 public class Customer extends User {
-    private Database data = new Database();
+    private DatabaseAccess data = DatabaseAccess.getInstance();
+    private boolean adult;
     private HashMap<Item, Integer> basket =  new HashMap<Item, Integer>();
     private ArrayList<Rental> rentals = new ArrayList<Rental>();
     private double balance;
@@ -18,6 +19,15 @@ public class Customer extends User {
         super(user);
         getBalanceFromDatabase();
         getRentalDetails();
+        setAdultStatus();
+    }
+    
+    public void setAdultStatus(){
+        adult = data.isCustomerAdult(username);
+    }
+    
+    public boolean getAdultStatus(){
+        return adult;
     }
     
     public String displayBasket(){
@@ -32,15 +42,28 @@ public class Customer extends User {
         data.getRentalDetails(username);
     }
     
+    public String displayRentals(){
+        String result = "";
+        for(Rental r : rentals){
+            result += r.getItem().getProductName() + " (Days: " + r.getDaysRented() + ")\n";
+        }
+        return result;
+    }
+    
     public void emptyBasket(){
         basket.clear();
     }
-    public boolean rentItems(int days){
-        /*for(Item i : basket){
-            if(i.rent(days)){ 
+    public boolean rentItems(){
+        boolean ok = true;
+        for (Map.Entry<Item, Integer> entry : basket.entrySet())
+        {
+            ok = entry.getKey().rent(entry.getValue());
+            if(ok){
+                rentals.add(new Rental(entry.getKey(), entry.getValue(), entry.getKey().calcCost(entry.getValue())));
+                basket.remove(entry.getKey(), entry.getValue());
             }
-        }*/
-        return true;
+        }
+        return ok;
     }
     public double calcBasket(){
         double result = 0.0;
@@ -84,6 +107,6 @@ public class Customer extends User {
             return true;
         }
         return false;
-    } 
+    }
    
 }
